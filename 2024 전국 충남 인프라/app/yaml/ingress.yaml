@@ -1,0 +1,37 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: wsc2024-ingress
+  namespace: wsc2024
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/load-balancer-name: wsc2024-alb
+    alb.ingress.kubernetes.io/healthcheck-path: /healthcheck
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+spec:
+  ingressClassName: alb
+  rules:
+    - http:
+        paths:
+          - path: /v1/customer
+            pathType: Prefix
+            backend:
+              service:
+                name: customer-svc
+                port:
+                  number: 80
+          - path: /v1/order
+            pathType: Prefix
+            backend:
+              service:
+                name: order-svc
+                port:
+                  number: 80
+          - path: /v1/product
+            pathType: Prefix
+            backend:
+              service:
+                name: product-svc
+                port:
+                  number: 80

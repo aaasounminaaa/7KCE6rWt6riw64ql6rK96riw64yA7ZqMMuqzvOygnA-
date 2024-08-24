@@ -1,0 +1,28 @@
+apiVersion: application-networking.k8s.aws/v1alpha1
+kind: IAMAuthPolicy
+metadata:
+    name: wsc2024-iam-auth-policy
+    namespace: wsc2024
+spec:
+    targetRef:
+        group: "gateway.networking.k8s.io"
+        kind: HTTPRoute
+        name: wsc2024-lattice-svc
+        namespace: wsc2024
+    policy: |
+        {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Principal": "*",
+                    "Action": "*",
+                    "Resource": "*",
+                    "Condition": {
+                        "IpAddress": {
+                            "aws:SourceIp": "BASTION/32"
+                        }
+                    }
+                }
+            ]
+        }

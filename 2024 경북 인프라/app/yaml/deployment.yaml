@@ -1,0 +1,202 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: customer
+  namespace: wsi
+  labels:
+    app: customer
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: customer
+  template:
+    metadata:
+      labels:
+        app: customer
+    spec:
+      containers:
+      - name: customer-cnt
+        image: CUSTOMER_IMAGE
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: log-volume
+          mountPath: /log
+        env:
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: customer-credentials
+              key: MYSQL_USER
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: customer-credentials
+              key: MYSQL_PASSWORD
+        - name: MYSQL_HOST
+          valueFrom:
+            secretKeyRef:
+              name: customer-credentials
+              key: MYSQL_HOST
+        - name: MYSQL_PORT
+          valueFrom:
+            secretKeyRef:
+              name: customer-credentials
+              key: MYSQL_PORT
+        - name: MYSQL_DBNAME
+          valueFrom:
+            secretKeyRef:
+              name: customer-credentials
+              key: MYSQL_DBNAME
+      - name: fluent-bit-cnt
+        image: fluent/fluent-bit:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 2020
+          name: metrics
+          protocol: TCP
+        volumeMounts:
+        - name: config-volume
+          mountPath: /fluent-bit/etc/
+        - name: log-volume
+          mountPath: /log
+      volumes:
+      - name: log-volume
+        emptyDir: {}
+      - name: config-volume
+        configMap:
+          name: customer
+      nodeSelector:
+        type: app
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order
+  namespace: wsi
+  labels:
+    app: order
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: order
+  template:
+    metadata:
+      labels:
+        app: order
+        type: fargate
+    spec:
+      serviceAccount: dynamodb-pull-sa
+      containers:
+      - name: order-cnt
+        image: ORDER_IMAGE
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: log-volume
+          mountPath: /log
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "0.5"
+          limits:
+            memory: "1Gi"
+            cpu: "0.5"
+        env:
+        - name: AWS_REGION
+          valueFrom:
+            secretKeyRef:
+              name: order-credentials
+              key: REGION
+      - name: fluent-bit-cnt
+        image: fluent/fluent-bit:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 2020
+          name: metrics
+          protocol: TCP
+        volumeMounts:
+        - name: config-volume
+          mountPath: /fluent-bit/etc/
+        - name: log-volume
+          mountPath: /log
+      volumes:
+      - name: log-volume
+        emptyDir: {}
+      - name: config-volume
+        configMap:
+          name: order
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product
+  namespace: wsi
+  labels:
+    app: product
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: product
+  template:
+    metadata:
+      labels:
+        app: product
+    spec:
+      containers:
+      - name: product-cnt
+        image: PRODUCT_IMAGE
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: log-volume
+          mountPath: /log
+        env:
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: product-credentials
+              key: MYSQL_USER
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: product-credentials
+              key: MYSQL_PASSWORD
+        - name: MYSQL_HOST
+          valueFrom:
+            secretKeyRef:
+              name: product-credentials
+              key: MYSQL_HOST
+        - name: MYSQL_PORT
+          valueFrom:
+            secretKeyRef:
+              name: product-credentials
+              key: MYSQL_PORT
+        - name: MYSQL_DBNAME
+          valueFrom:
+            secretKeyRef:
+              name: product-credentials
+              key: MYSQL_DBNAME
+      - name: fluent-bit-cnt
+        image: fluent/fluent-bit:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 2020
+          name: metrics
+          protocol: TCP
+        volumeMounts:
+        - name: config-volume
+          mountPath: /fluent-bit/etc/
+        - name: log-volume
+          mountPath: /log
+      volumes:
+      - name: log-volume
+        emptyDir: {}
+      - name: config-volume
+        configMap:
+          name: product
+      nodeSelector:
+        type: app

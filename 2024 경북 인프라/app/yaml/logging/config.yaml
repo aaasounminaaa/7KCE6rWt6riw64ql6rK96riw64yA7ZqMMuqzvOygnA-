@@ -1,0 +1,102 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: customer
+  namespace: wsi
+data:
+  fluent-bit.conf: |
+    [SERVICE]
+        Flush               1
+        Log_Level           info
+        Daemon              off
+
+    [INPUT]
+        Name                tail
+        Path                /log/*.log
+        Tag                 customer
+        Refresh_Interval    10
+        Mem_Buf_Limit       50MB
+        Skip_Long_Lines     On
+
+    [FILTER]
+        Name                grep
+        Match               *customer*
+        Exclude             log /.*healthcheck.*/
+        Exclude             log /.*healthcheck.*/
+        Exclude             log .*healthcheck.*
+
+    [OUTPUT]
+        Name                forward
+        Match               *
+        Host                SVC_IP
+        Port                24224
+        Retry_Limit         False
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: product
+  namespace: wsi
+data:
+  fluent-bit.conf: |
+    [SERVICE]
+        Flush               1
+        Log_Level           info
+        Daemon              off
+
+    [INPUT]
+        Name                tail
+        Path                /log/*.log
+        Tag                 product
+        Refresh_Interval    10
+        Mem_Buf_Limit       50MB
+        Skip_Long_Lines     On
+
+    [FILTER]
+        Name                grep
+        Match               *product*
+        Exclude             log /.*healthcheck.*/
+        Exclude             log /.*healthcheck.*/
+        Exclude             log .*healthcheck.*
+
+    [OUTPUT]
+        Name                forward
+        Match               *
+        Host                SVC_IP
+        Port                24225
+        Retry_Limit         False
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: order
+  namespace: wsi
+data:
+  flb_log_cw: "false"
+  fluent-bit.conf: |
+    [SERVICE]
+        Flush               1
+        Log_Level           info
+        Daemon              off
+
+    [INPUT]
+        Name                tail
+        Path                /log/*.log
+        Tag                 order
+        Refresh_Interval    10
+        Mem_Buf_Limit       50MB
+        Skip_Long_Lines     On
+
+    [FILTER]
+        Name                grep
+        Match               *order*
+        Exclude             log /.*healthcheck.*/
+        Exclude             log /.*healthcheck.*/
+        Exclude             log .*healthcheck.*
+
+    [OUTPUT]
+        Name                forward
+        Match               *
+        Host                SVC_IP
+        Port                24226
+        Retry_Limit         False
