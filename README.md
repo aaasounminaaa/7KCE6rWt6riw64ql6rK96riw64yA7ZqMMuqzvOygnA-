@@ -18,3 +18,6 @@ https://osmcloud.notion.site/Kubernetes-4c699be6ec9c4c63bb80af52b2ea588b?pvs=4
 
 ### workshop
 https://catalog.us-east-1.prod.workshops.aws/workshops/483b024b-1d0e-4633-bdb7-69bf0de383f4/ko-KR
+
+### cloudfornt security
+https://docs.aws.amazon.com/ko_kr/AmazonCloudFront/latest/DeveloperGuide/private-content-creating-signed-url-custom-policy.html
