@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" class="position-relative w-100 h-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <title>WorldSkills Korea 2024</title>
+</head>
+<body class="position-absolute w-100 text-center top-50 translate-middle-y">
+    <h1>WorldSkills Korea 2024</h1>
+    <div class="d-flex justify-content-center">
+        <div class="border border-secondary m-3">
+            <h2>Customer</h2>
+            <div class="border border-success m-2 p-2">
+                <h3>Get Customer</h3>
+                <input type="text" id="ct_id" placeholder="Customer ID">
+                <button class="btn btn-success" onclick="getCustomer()">Get Customer</button>
+                <div class="bg-success-subtle w-100 mt-2 fw-bold" style="min-height: 30px;" id="get_customer">
+                    Response
+                </div>
+            </div>
+            <div class="border border-primary m-2 p-2">
+                <h3>Create Customer</h3>
+                <input type="text" id="customer_id" placeholder="ID">
+                <input type="text" id="customer_name" placeholder="Name">
+                <input type="text" id="customer_gender" placeholder="Gender">
+                <button class="btn btn-primary" onclick="postCustomer()">Create Customer</button>
+                <div class="bg-primary-subtle w-100 mt-2 fw-bold" style="min-height: 30px;" id="post_customer">
+                    Response
+                </div>
+            </div>
+        </div>
+        <div class="border border-secondary m-3">
+            <h2>Product</h2>
+            <div class="border border-success m-2 p-2">
+                <h3>Get Product</h3>
+                <input type="text" id="pd_id" placeholder="Product ID">
+                <button class="btn btn-success" onclick="getProduct()">Get Product</button>
+                <div class="bg-success-subtle w-100 mt-2 fw-bold" style="min-height: 30px;" id="get_product">
+                    Response
+                </div>
+            </div>
+            <div class="border border-primary m-2 p-2">
+                <h3>Create Product</h3>
+                <input type="text" name="id" id="product_id" placeholder="ID">
+                <input type="text" name="name" id="product_name" placeholder="Name">
+                <input type="text" name="category" id="product_category" placeholder="Category">
+                <button class="btn btn-primary" onclick="postProduct()">Create Product</button>
+                <div class="bg-primary-subtle w-100 mt-2 fw-bold" style="min-height: 30px;" id="post_product">
+                    Response
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="border border-secondary my-3 mx-auto w-75">
+        <h2>Order</h2>
+        <div class="border border-success m-2 p-2">
+            <h3>Get Order</h3>
+            <input type="text" id="od_id" placeholder="Order ID">
+            <button class="btn btn-success" onclick="getOrder()">Get Order</button>
+            <div class="bg-success-subtle w-100 mt-2 fw-bold" style="min-height: 30px;" id="get_order">
+                Response
+            </div>
+        </div>
+        <div class="border border-primary m-2 p-2">
+            <h3>Create Order</h3>
+            <input type="text" name="id" id="order_id" placeholder="ID">
+            <input type="text" name="customerid" id="order_cid" placeholder="Customer ID">
+            <input type="text" name="productid" id="order_pid" placeholder="Product ID">
+            <button class="btn btn-primary" onclick="postOrder()">Create Order</button>
+            <div class="bg-primary-subtle w-100 mt-2 fw-bold" style="min-height: 30px;" id="post_order">
+                Response
+            </div>
+        </div>
+    </div>
+    <script src="js/main.js"></script>
+</body>
+</html>
+<script>
+function getCustomer() {
+    fetch("/v1/customer?id=" + document.getElementById("ct_id").value)
+        .then(response => response.json())
+        .then(json => document.getElementById("get_customer").textContent = JSON.stringify(json, null, 2))
+        .catch(error => console.error('Error fetching customer:', error));
+}
+
+function postCustomer() {
+    fetch("/v1/customer", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            id: document.getElementById("customer_id").value,
+            name: document.getElementById("customer_name").value,
+            gender: document.getElementById("customer_gender").value
+        })
+    })
+    .then(response => response.json())
+    .then(json => document.getElementById("post_customer").textContent = JSON.stringify(json, null, 2))
+    .catch(error => console.error('Error posting customer:', error));
+}
+
+function getProduct() {
+    fetch("/v1/product?id=" + document.getElementById("pd_id").value)
+        .then(response => response.json())
+        .then(json => document.getElementById("get_product").textContent = JSON.stringify(json, null, 2))
+        .catch(error => console.error('Error fetching product:', error));
+}
+
+function postProduct() {
+    fetch("/v1/product", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            id: document.getElementById("product_id").value,
+            name: document.getElementById("product_name").value,
+            category: document.getElementById("product_category").value
+        })
+    })
+    .then(response => response.json())
+    .then(json => document.getElementById("post_product").textContent = JSON.stringify(json, null, 2))
+    .catch(error => console.error('Error posting product:', error));
+}
+
+function getOrder() {
+    fetch("/v1/order?id=" + document.getElementById("od_id").value)
+        .then(response => response.json())
+        .then(json => document.getElementById("get_order").textContent = JSON.stringify(json, null, 2))
+        .catch(error => console.error('Error fetching order:', error));
+}
+
+function postOrder() {
+    fetch("/v1/order", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            id: document.getElementById("order_id").value,
+            customerid: document.getElementById("order_cid").value,
+            productid: document.getElementById("order_pid").value
+        })
+    })
+    .then(response => response.json())
+    .then(json => document.getElementById("post_order").textContent = JSON.stringify(json, null, 2))
+    .catch(error => console.error('Error posting order:', error));
+}
+</script>

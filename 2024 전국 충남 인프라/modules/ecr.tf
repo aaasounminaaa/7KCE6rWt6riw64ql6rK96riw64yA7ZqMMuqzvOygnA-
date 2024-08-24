@@ -33,12 +33,12 @@ resource "aws_ecr_repository" "Product" {
     tags = {
         Name = "product-repo"
     } 
-  depends_on = [aws_ecr_repository.customer]
+  depends_on = [aws_ecr_repository.customer,aws_ecr_repository_policy.example]
 }
 resource "aws_ecr_repository" "order" {
   name = "order-repo"
     tags = {
         Name = "order-repo"
     } 
-  depends_on = [ aws_ecr_repository.Product ]
+  depends_on = [ aws_ecr_repository.Product,aws_ecr_repository_policy.example ]
 }

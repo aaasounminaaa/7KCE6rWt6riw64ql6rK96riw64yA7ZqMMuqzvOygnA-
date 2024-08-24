@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USA API Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 50%;
+            margin: auto;
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input[type="text"], input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>API Management</h1>
+
+        <!-- Customer Management -->
+        <h2>Customer</h2>
+        <form id="get-customer-form">
+            <h3>Get Customer</h3>
+            <label for="get-customer-id">Customer ID:</label>
+            <input type="text" id="get-customer-id" name="id" required>
+            <input type="submit" value="Get Customer">
+        </form>
+        <form id="post-customer-form">
+            <h3>Create Customer</h3>
+            <label for="post-customer-id">Customer ID:</label>
+            <input type="text" id="post-customer-id" name="id" required>
+            <label for="post-customer-name">Customer Name:</label>
+            <input type="text" id="post-customer-name" name="name" required>
+            <label for="post-customer-gender">Customer Gender:</label>
+            <input type="text" id="post-customer-gender" name="gender" required>
+            <input type="submit" value="Create Customer">
+        </form>
+
+        <!-- Product Management -->
+        <h2>Product</h2>
+        <form id="get-product-form">
+            <h3>Get Product</h3>
+            <label for="get-product-id">Product ID:</label>
+            <input type="text" id="get-product-id" name="id" required>
+            <input type="submit" value="Get Product">
+        </form>
+        <form id="post-product-form">
+            <h3>Create Product</h3>
+            <label for="post-product-id">Product ID:</label>
+            <input type="text" id="post-product-id" name="id" required>
+            <label for="post-product-name">Product Name:</label>
+            <input type="text" id="post-product-name" name="name" required>
+            <label for="post-product-category">Product Category:</label>
+            <input type="text" id="post-product-category" name="category" required>
+            <input type="submit" value="Create Product">
+        </form>
+
+        <!-- Order Management -->
+        <h2>Order</h2>
+        <form id="get-order-form">
+            <h3>Get Order</h3>
+            <label for="get-order-id">Order ID:</label>
+            <input type="text" id="get-order-id" name="id" required>
+            <input type="submit" value="Get Order">
+        </form>
+        <form id="post-order-form">
+            <h3>Create Order</h3>
+            <label for="post-order-id">Order ID:</label>
+            <input type="text" id="post-order-id" name="id" required>
+            <label for="post-order-customerid">Customer ID:</label>
+            <input type="text" id="post-order-customerid" name="customerid" required>
+            <label for="post-order-productid">Product ID:</label>
+            <input type="text" id="post-order-productid" name="productid" required>
+            <input type="submit" value="Create Order">
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('get-customer-form').onsubmit = function(event) {
+            event.preventDefault();
+            const id = document.getElementById('get-customer-id').value;
+            fetch(`/v1/customer?id=${id}`)
+                .then(response => response.json())
+                .then(data => alert(JSON.stringify(data)))
+                .catch(error => alert('Error:', error));
+        };
+
+        document.getElementById('post-customer-form').onsubmit = function(event) {
+            event.preventDefault();
+            const data = {
+                id: document.getElementById('post-customer-id').value,
+                name: document.getElementById('post-customer-name').value,
+                gender: document.getElementById('post-customer-gender').value
+            };
+            fetch('/v1/customer', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => alert(JSON.stringify(data)))
+            .catch(error => alert('Error:', error));
+        };
+
+        document.getElementById('get-product-form').onsubmit = function(event) {
+            event.preventDefault();
+            const id = document.getElementById('get-product-id').value;
+            fetch(`/v1/product?id=${id}`)
+                .then(response => response.json())
+                .then(data => alert(JSON.stringify(data)))
+                .catch(error => alert('Error:', error));
+        };
+
+        document.getElementById('post-product-form').onsubmit = function(event) {
+            event.preventDefault();
+            const data = {
+                id: document.getElementById('post-product-id').value,
+                name: document.getElementById('post-product-name').value,
+                category: document.getElementById('post-product-category').value
+            };
+            fetch('/v1/product', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => alert(JSON.stringify(data)))
+            .catch(error => alert('Error:', error));
+        };
+
+        document.getElementById('get-order-form').onsubmit = function(event) {
+            event.preventDefault();
+            const id = document.getElementById('get-order-id').value;
+            fetch(`/v1/order?id=${id}`)
+                .then(response => response.json())
+                .then(data => alert(JSON.stringify(data)))
+                .catch(error => alert('Error:', error));
+        };
+
+        document.getElementById('post-order-form').onsubmit = function(event) {
+            event.preventDefault();
+            const data = {
+                id: document.getElementById('post-order-id').value,
+                customerid: document.getElementById('post-order-customerid').value,
+                productid: document.getElementById('post-order-productid').value
+            };
+            fetch('/v1/order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => alert(JSON.stringify(data)))
+            .catch(error => alert('Error:', error));
+        };
+    </script>
+</body>
+</html>
